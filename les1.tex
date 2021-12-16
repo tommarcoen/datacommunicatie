@@ -1,0 +1,139 @@
+\documentclass[article,a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage[scaled=.8]{beramono}
+\begin{document}
+
+\title{Les 1}
+\author{Tom Marcoen}
+\date{10 december 2021}
+\maketitle
+
+\section{Inleiding Cisco IOS}
+
+\begin{itemize}
+\item
+   Switches en routers zijn speciale computers met een processor, RAM en flash geheugen (i.p.v.~een harde schijf)
+\item
+   Net zoals computers hebben ook switches een routers een besturingssysteem
+   \begin{itemize}
+   \item Cisco Systems heeft IOS, IOS-XE en IOS-XR
+   \item Juniper Networks heeft Junos
+   \item Nokia heeft SROS of TiMOS
+   \end{itemize}
+\item
+   Na het inladen van het besturingssysteem wordt de configuratie ingelezen
+\item
+   Om switches en routers te configureren, heb je een \emph{consolekabel} nodig en eventueel een USB-to-serialkabel als je laptop of computer niet meer over een seri\"ele poort beschikt
+\item
+   Om te verbinden met de router of switch via deze consolekabel, heb je een terminalprogramma nodig zoals PuTTY
+   \begin{description}
+   \item[connection type] serial
+   \item[serial line] COM$x$ --- het nummertje moet je opzoeken in Device Manager
+   \item[speed] 9600\,bps
+   \item[data bits] 8
+   \item[stop bits] 1
+   \item[parity] none
+   \item[flow control] none
+   \end{description}
+\item
+   De prompt toont de hostname van het toestel en een groter-dan-teken (\emph{user exec mode}); gebruik het commando \texttt{enable} om over te schakelen naar de modus waarin je alle rechten hebt (\emph{privileged exec mode})
+\item
+   Om de switch of router te configureren, moet je het commando \texttt{configure terminal} ingeven (\emph{configuration mode})
+\end{itemize}
+
+
+
+\section{IP-adressen}
+Er zijn drie belangrijke elementen aan een IP-adresconfiguratie:
+\begin{enumerate}
+\item Het IP-adres van de computer
+\item Het subnetmasker van de computer
+\item De default gateway
+\end{enumerate}
+Het subnetmasker bepaalt welk gedeelde van het IP-adres aangeeft in welk netwerk het zich bevindt (de straatnaam) en welk gedeelde de computer uniek identificeert (het huisnummer).
+
+\paragraph{Bijvoorbeeld:}
+\begin{itemize}
+\item Het subnetmasker is 255.255.255.0; dit betekent dat de eerste drie nummers (want drie keer 255) de straatnaam of het netwerk aanduiden en het laatste blokje (de 0 in het subnet masker) het huisnummer aangeeft.
+\item De IP-adressen 192.168.1.1 en 192.168.1.20 bevinden zich dus in hetzelfde netwerk als het subnet masker 255.255.255.0 is.
+\item De IP-adressen 192.168.1.1 en 192.168.2.7 bevinden zich \emph{niet} in hetzelfde netwerk.
+\end{itemize}
+Het subnetmasker moet niet altijd 255.255.255.0 zijn maar kan bijvoorbeeld ook 255.255.0.0 zijn. In dit geval geven de twee eerste nummers van het IP-adres de straatnaam weer en de laatste twee nummers het huisnummer (het is dus een heel groot netwerk of een heel lange straat met veel huisnummers).
+
+\paragraph{Bijvoorbeeld:}
+\begin{itemize}
+\item 172.16.1.1 en 172.16.2.7 bevinden zich wel in hetzelfde netwerk als het subnet masker 255.255.0.0 is.
+\item 172.16.2.7 en 172.17.3.5 bevinden zich niet in hetzelfde netwerk.
+\end{itemize}
+Het eerste IP-adres (het laagste nummer) is de ``naam'' van het netwerk of de straatnaam en mag niet gebruikt worden door een computer of ander toestel op het netwerk.
+Het laatste IP-adres (het hoogste nummer) is altijd het broadcastadres en mag ook niet toegekend worden aan een computer in het netwerk.
+
+\paragraph{Bijvoorbeeld:}
+\begin{itemize}
+\item Het subnetmasker is 255.255.255.0
+\item Voor het netwerk 192.168.1.0 is 192.168.1.0 het netwerkadres en 192.168.1.255 het broadcastadres.
+\item Voor het netwerk 10.140.37.0 is 10.140.37.0 het netwerkadres en 10.140.37.255 het broadcastadres.
+\end{itemize}
+
+%\begin{quote}
+De \emph{default gateway} is een willekeurig, geldig IP-adres in het netwerk.
+Het kan dus bijvoorbeeld ook het IP-adres 192.168.1.46 zijn.
+Maar over het algemeen wordt ofwel het eerste IP-adres ofwel het laatste IP-adres gebruikt.
+Dit is een eenvoudige regel waardoor het makkelijk te onthouden is welk IP-adres de default gateway is.
+%\end{quote}
+
+
+
+\section{Virtuele switches (VLAN's)}
+\begin{itemize}
+\item Het is niet interessant om voor elk netwerk een eigen switch te plaatsen
+   \begin{itemize}
+   \item Als je slechts enkele printers nodig hebt, is het erg kostelijk om hier voor een eigen switch te plaatsen
+   \item Als je in een ruimte meerdere netwerken beschikbaar wilt maken (bv. docenten, leerlingen en printers) is het niet praktisch om voor elk netwerk een eigen switch te plaatsen.
+   \end{itemize}
+\item Een VLAN creëert een virtuele switch op fysieke hardware.
+\end{itemize}
+
+\begin{verbatim}
+# configure terminal
+(config)# vlan 2
+(config-vlan)# name Docenten
+(config-vlan)# vlan 3
+(config-vlan)# name Leerlingen
+(config-vlan)# vlan 4
+(config-vlan)# name Printers
+(config-vlan)# exit
+(config)# exit
+# show vlan
+
+VLAN Name          Status    Ports
+---- ------------- --------- -------------------------------
+1    default       active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                             Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                             Fa0/9, Fa0/10, Fa0/11, Fa0/12
+                             Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                             Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                             Fa0/21, Fa0/22, Fa0/23, Fa0/24
+                             Gig0/1, Gig0/2
+2    Docenten      active    
+3    Leerlingen    active    
+4    Printers      active
+\end{verbatim}
+
+Om een fysieke poort van een switch toe te kennen aan een van de gemaakte VLAN's, moet je twee commando's ingeven.
+
+\begin{verbatim}
+# configure terminal
+(config)# interface Fa0/1
+(config-if)# switchport mode access
+(config-if)# switchport access vlan 2
+(config-if)# interface Fa0/2
+(config-if)# switchport mode access
+(config-if)# switchport access vlan 2
+(config-if)# interface Fa0/3
+(config-if)# switchport mode access
+(config-if)# switchport access vlan 3
+\end{verbatim}
+
+\end{document}

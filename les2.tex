@@ -1,0 +1,98 @@
+\documentclass[article,a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage[scaled=.8]{beramono}
+\begin{document}
+
+\title{Les 2}
+\author{Tom Marcoen}
+\date{17 december 2021}
+\maketitle
+
+
+\section{Oefening: VLAN's}
+
+\begin{itemize}
+\item Neem twee desktop computers en verbind deze met een Cisco Catalyst 2960-switch.
+   \begin{itemize}
+   \item Heb je een straight of crossoverkabel nodig?
+   \end{itemize}
+\item Geef beide computers een IP-adres in hetzelfde netwerk. Kies zelf het netwerkadres maar gebruik het subnet masker 255.255.255.0. Het is niet nodig een default gateway in te vullen.
+\item Ping vanaf de eerste computer het IP-adres van de tweede computer.
+\item Ping vanaf de tweede computer het IP-adres van de eerste computer.
+\item Log nu in op de switch met behulp van PuTTY en maak twee VLAN's aan: een voor de HR-afdeling en een tweede voor het IT operations team.
+   \begin{itemize}
+   \item Het VLAN-nummer wordt mag je zelf vrij kiezen.
+   \item Enkel het nummer is belangrijk. De naam mag je ook vrij kiezen maar kan best een goede omschrijving bevatten.
+   \item De VLAN-naam mag spaties bevatten maar dan moet je de naam tussen quotes zetten.
+   \item Je kan best eventuele spaties door streeptjes of underscores vervangen en een maximale lengte van 30 tekens hanteren.
+   \end{itemize}
+\item Plaats de interface van de eerste computer in het HR-VLAN en de interface van de tweede computer in het VLAN voor IT operations.
+\item Ping opnieuw van de eerste computer naar de tweede computer en omgekeerd.
+\end{itemize}
+
+
+\section{Communicatie tussen (virtuele) netwerken: de router}
+
+\begin{itemize}
+\item Een Cisco router gebruikt ook Cisco IOS dus een router heeft ook de user exec en privileged exec modes.
+\item In tegenstelling tot een switch, zijn de interfaces van een router standaard uitgeschakeld.
+\item Elke interface van een router moet een IP-adres geconfigureerd hebben om te werken.
+\item Elke interface van een router moet zich in een ander netwerk bevinden.
+\item Een router is het doorgeefluik voor pakketjes tussen verschillende netwerken.
+\end{itemize}
+
+\begin{verbatim}
+# configure terminal
+(config)# interface Gi0/0/0
+(config-if)# no shutdown
+(config-if)# ip address 192.168.1.1 255.255.255.0
+(config-if)# interface Gi0/0/1
+(config-if)# no shutdown
+(config-if)# ip address 192.168.2.254 255.255.255.0
+(config-if)# end
+#show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0/0   192.168.1.1     YES manual up                    down 
+GigabitEthernet0/0/1   192.168.2.254   YES manual up                    down 
+GigabitEthernet0/0/2   unassigned      YES unset  administratively down down 
+Serial0/1/0            unassigned      YES unset  administratively down down 
+Serial0/1/1            unassigned      YES unset  administratively down down 
+Vlan1                  unassigned      YES unset  administratively down down
+\end{verbatim}
+
+
+
+
+\section{Uitbreiding van de oefening}
+\begin{itemize}
+\item Geef beide computers IP-adressen in verschillende netwerken.
+\item Geef beide computers als default gateway het IP-adres van de router.
+\item Ping opnieuw tussen beide computers.
+\end{itemize}
+
+\begin{verbatim}
+# show ip route connected 
+ C   192.168.1.0/24  is directly connected, GigabitEthernet0/0/0
+ C   192.168.2.0/24  is directly connected, GigabitEthernet0/0/1
+\end{verbatim}
+
+
+
+\section{Meerdere VLAN's over \'e\'en kabel}
+\begin{itemize}
+\item Eén netwerkkabel tussen de router en de switch per VLAN is geen schaalbare oplossing
+\item Een trunk interface is een speciale interface waar meerdere (of alle) VLAN's over heen gaan. 
+\end{itemize}
+
+\begin{verbatim}
+switch# configure terminal
+switch(config)# interface GigabitEthernet0/1
+switch(config-if)# switchport mode trunk
+switch(config-if)# end
+\end{verbatim}
+
+De router moet dan ook op een andere manier geconfigureerd worden.
+
+\end{document}
+
