@@ -13,20 +13,22 @@
 
 \begin{itemize}
 \item
-   Switches en routers zijn speciale computers met een processor, RAM en flash geheugen (i.p.v.~een harde schijf)
+   Switches en routers zijn speciale computers met een processor, RAM en flash geheugen (i.p.v.~een harde schijf).
 \item
-   Net zoals computers hebben ook switches een routers een besturingssysteem
+   Net zoals computers hebben ook switches een routers een besturingssysteem.
    \begin{itemize}
-   \item Cisco Systems heeft IOS, IOS-XE en IOS-XR
-   \item Juniper Networks heeft Junos
-   \item Nokia heeft SROS of TiMOS
+   \item Cisco Systems heeft IOS, IOS-XE en IOS-XR;
+   \item Juniper Networks heeft Junos;
+   \item Nokia heeft SR~OS of TiMOS.
    \end{itemize}
 \item
-   Na het inladen van het besturingssysteem wordt de configuratie ingelezen
+   Na het inladen van het besturingssysteem wordt de configuratie ingelezen.
 \item
    Om switches en routers te configureren, heb je een \emph{consolekabel} nodig en eventueel een USB-to-serialkabel als je laptop of computer niet meer over een seri\"ele poort beschikt
 \item
-   Om te verbinden met de router of switch via deze consolekabel, heb je een terminalprogramma nodig zoals PuTTY
+   Om te verbinden met de router of switch via deze consolekabel, heb je een terminalprogramma nodig zoals PuTTY.
+   Deze kan je downloaden van \href{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}{https://www.chiark.greenend.org.uk/~sgtatham/putty/}.
+   Ofwel download je de Windows installer (MSI), ofwel download je \texttt{putty.exe}.
    \begin{description}
    \item[connection type] serial
    \item[serial line] COM$x$ --- het nummertje moet je opzoeken in Device Manager
@@ -37,9 +39,10 @@
    \item[flow control] none
    \end{description}
 \item
-   De prompt toont de hostname van het toestel en een groter-dan-teken (\emph{user exec mode}); gebruik het commando \texttt{enable} om over te schakelen naar de modus waarin je alle rechten hebt (\emph{privileged exec mode})
+   De prompt toont de hostname van het toestel en een groter-dan-teken (\emph{user exec mode});
+   gebruik het commando \texttt{enable} om over te schakelen naar de modus waarin je alle rechten hebt (\emph{privileged exec mode}).
 \item
-   Om de switch of router te configureren, moet je het commando \texttt{configure terminal} ingeven (\emph{configuration mode})
+   Om de switch of router te configureren, moet je het commando \texttt{configure terminal} ingeven (\emph{configuration mode}).
 \end{itemize}
 
 
@@ -47,19 +50,19 @@
 \section{IP-adressen}
 Er zijn drie belangrijke elementen aan een IP-adresconfiguratie:
 \begin{enumerate}
-\item Het IP-adres van de computer
-\item Het subnetmasker van de computer
-\item De default gateway
+\item het IP-adres van de computer,
+\item het subnet mask van de computer,
+\item de default gateway.
 \end{enumerate}
-Het subnetmasker bepaalt welk gedeelde van het IP-adres aangeeft in welk netwerk het zich bevindt (de straatnaam) en welk gedeelde de computer uniek identificeert (het huisnummer).
+Het subnet mask bepaalt welk gedeelde van het IP-adres aangeeft in welk netwerk het zich bevindt (de straatnaam) en welk gedeelde de computer uniek identificeert (het huisnummer).
 
 \paragraph{Bijvoorbeeld:}
 \begin{itemize}
-\item Het subnetmasker is 255.255.255.0; dit betekent dat de eerste drie nummers (want drie keer 255) de straatnaam of het netwerk aanduiden en het laatste blokje (de 0 in het subnet masker) het huisnummer aangeeft.
+\item Het subnet mask is 255.255.255.0; dit betekent dat de eerste drie nummers (want drie keer 255) de straatnaam of het netwerk aanduiden en het laatste blokje (de 0 in het subnet masker) het huisnummer aangeeft.
 \item De IP-adressen 192.168.1.1 en 192.168.1.20 bevinden zich dus in hetzelfde netwerk als het subnet masker 255.255.255.0 is.
 \item De IP-adressen 192.168.1.1 en 192.168.2.7 bevinden zich \emph{niet} in hetzelfde netwerk.
 \end{itemize}
-Het subnetmasker moet niet altijd 255.255.255.0 zijn maar kan bijvoorbeeld ook 255.255.0.0 zijn. In dit geval geven de twee eerste nummers van het IP-adres de straatnaam weer en de laatste twee nummers het huisnummer (het is dus een heel groot netwerk of een heel lange straat met veel huisnummers).
+Het subnet mask moet niet altijd 255.255.255.0 zijn maar kan bijvoorbeeld ook 255.255.0.0 zijn. In dit geval geven de twee eerste nummers van het IP-adres de straatnaam weer en de laatste twee nummers het huisnummer (het is dus een heel groot netwerk of een heel lange straat met veel huisnummers).
 
 \paragraph{Bijvoorbeeld:}
 \begin{itemize}
@@ -71,7 +74,7 @@ Het laatste IP-adres (het hoogste nummer) is altijd het broadcastadres en mag oo
 
 \paragraph{Bijvoorbeeld:}
 \begin{itemize}
-\item Het subnetmasker is 255.255.255.0
+\item Het subnet mask is 255.255.255.0.
 \item Voor het netwerk 192.168.1.0 is 192.168.1.0 het netwerkadres en 192.168.1.255 het broadcastadres.
 \item Voor het netwerk 10.140.37.0 is 10.140.37.0 het netwerkadres en 10.140.37.255 het broadcastadres.
 \end{itemize}
@@ -87,9 +90,9 @@ Dit is een eenvoudige regel waardoor het makkelijk te onthouden is welk IP-adres
 
 \section{Virtuele switches (VLAN's)}
 \begin{itemize}
-\item Het is niet interessant om voor elk netwerk een eigen switch te plaatsen
+\item Het is niet interessant om voor elk netwerk een eigen switch te plaatsen.
    \begin{itemize}
-   \item Als je slechts enkele printers nodig hebt, is het erg kostelijk om hier voor een eigen switch te plaatsen
+   \item Als je slechts enkele printers nodig hebt, is het erg kostelijk om hier voor een eigen switch te plaatsen.
    \item Als je in een ruimte meerdere netwerken beschikbaar wilt maken (bv. docenten, leerlingen en printers) is het niet praktisch om voor elk netwerk een eigen switch te plaatsen.
    \end{itemize}
 \item Een VLAN creëert een virtuele switch op fysieke hardware.
